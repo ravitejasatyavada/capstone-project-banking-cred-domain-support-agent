@@ -1,8 +1,40 @@
-# Final Capstone — Cred Domain Support Agent (CrewAI)
+# Final Capstone — Banking - Cred Domain Support Agent (CrewAI + AutoGen + FastAPI)
 
 **API Execution Profile:** Local-Only Deterministic (`MOCK_LLM`), Zero-Network Isolation
 
+Environment setup and execution instructions --> refer to [instuction.md](instuction.md)
 ---
+
+## 1. Executive Summary & Design Choices
+
+This repository contains an enterprise-grade production support system built for Cred's lending-operations team. The architecture seamlessly connects a core **CrewAI orchestration layer** with an independent **AutoGen multi-agent consensus review stage**, backed by a local **ChromaDB vector database** and a high-performance **FastAPI backend**. 
+
+The entire system is completely hardened against external operational risks. It executes under strict, keyless `MOCK_LLM` constraints to ensure predictable, deterministic grading and compliance metrics without dependency on public APIs.
+
+# Core Technology Stack & Functional Breakdown
+
+This document provides a granular functional classification of the frameworks, runtimes, and libraries leveraged to compile the Cred Domain Support Agent architecture under strict zero-network isolation constraints.
+
+## I. Agentic Frameworks (Multi-Agent Orchestration & Consensus)
+*   **`crewai` (v1.9.3):** Orchestrates the primary sequential execution workflow using role-based autonomous agents (`Retrieval Specialist`, `Core Ledger Auditor`, and `Response Composer`) operating under explicit task boundaries.
+*   **`autogen`:** Drives the independent, secondary multi-agent consensus review loop using a `RoundRobinGroupChat` topology to cross-verify, audit, and rewrite initial text drafts before release.
+
+## II. Vector Database & Semantic Intelligence (RAG Pipeline)
+*   **`chromadb` (~v1.1.0):** Provides the high-performance local, ephemeral vector database client context to store, index, and query split text chunks directly in application memory.
+*   **`sentence-transformers` (`all-MiniLM-L6-v2`):** Generates local 384-dimensional dense semantic vector embeddings entirely offline, mapping queries to coordinates to calculate precise mathematical cosine similarity metrics.
+
+## III. Web API, Telemetry Gateway & Stateful Portals
+*   **`fastapi`:** Services the high-concurrency production REST routing layer, hosting asynchronous endpoints, processing validation schemas, and managing traffic flow.
+*   **`uvicorn`:** Functions as the production-grade ASGI web server implementation layer to manage local loopback connection sockets and event loops.
+*   **`websockets` (FastAPI Native Engine):** Powers the stateful, persistent, bi-directional network loop required to preserve multi-turn user conversation history context within single active thread runs.
+
+## IV. Data Validation, Structural Schemas & Core Typing
+*   **`pydantic`:** Enforces strict data contract schemas, validating structured data matrices at the application boundary for input payloads (`QueryRequest`), crew outcomes (`SupportAgentResponseSchema`), and AutoGen verdicts (`VerdictModel`).
+*   **`typing`:** Python's native typing module used to implement strict parameter and return type signatures (`List`, `Dict`, `Any`), ensuring absolute codebase clarity and linting compliance.
+
+## V. Mathematical Operations & Algorithmic Computations
+*   **`numpy` (v1.26.4):** Functions as the primary numeric engine for internal database array parsing, insulated with custom startup scalar compatibility fixes to guarantee stable runtime performance under Python 3.12.
+
 
 ### Dataset Design Choices (Part 1, Task 1)
 To ensure absolute grading reproducibility, the dataset generator initializes with a deterministic baseline random seed (`42`). The generation matrix produces exactly **45 unique loan application records**, ensuring specific target balances across variables:
@@ -100,7 +132,6 @@ A performance benchmark was run using identical queries across both indexing con
 
 
 ---
----
 
 ## 4. Multi-Agent Orchestration & Core Capabilities
 
@@ -159,7 +190,7 @@ TASK 8 VERIFICATION: STATEFUL MULTI-TURN LIFECYCLE
 [PORTAL DISCONNECT] Client connection dropped. In-process history cache flushed.
 [PORTAL RESET]      Fresh socket opened. Previous multi-turn state values successfully cleared (Reset verified).
 ====================================================================
-
+```
 ---
 
 ## 5. System Hardening & Cross-Framework Verification
