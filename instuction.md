@@ -1,7 +1,8 @@
 Execution Manifest & Environmental Controls
 To comply with zero-network isolation requirements, outbound telemetry networks must be disabled before running the orchestration layers.Confirm these variables are declared in your execution environment profile:
-export CREWAI_DISABLE_TELEMETRY=true 
-export OTEL_SDK_DISABLED=true 
+export CREWAI_DISABLE_TELEMETRY=true
+export OTEL_SDK_DISABLED=true
+
 
 Installation and Workspace Setup
 Initialize your local dependencies inside a clean environment:
@@ -24,7 +25,7 @@ Confirms the fraud flag rate lands within the 10%–30% target window.
 
 
 Calibrate Fallback Limits:
-python3 rag_engine.py
+python3 -m rag.cached_retrieval
 Establishes a solid data-driven similarity threshold.
 
 
@@ -34,4 +35,11 @@ Generates document-level precision and recall metrics.
 
 Launch the FastAPI Server:
 uvicorn main:app --host 127.0.0.1 --port 8000 --reload
+
+Test the Rate-Limiting Guardrail (Load Tester):
+python3 -m tests.test_rate_limiter
+
+Test the Interactive Documentation UI:
+Navigate straight to http://127.0.0.1:8000/docs in your browser. Both required endpoints (POST /ask and POST /add-document) will display their validation schemas on screen.
+
     

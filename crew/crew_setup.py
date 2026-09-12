@@ -21,7 +21,7 @@ from pydantic import BaseModel, Field
 from crewai import Agent, Task, Crew, Process
 from mock_llm import MockCrewILLM
 from tools import check_loan_application_status
-from rag_engine import query_rag, coll_sentence
+from rag.cached_retrieval import query_rag, coll_sentence
 
 # --- ENVIRONMENTAL CONTROLS (Part 2, Task 7 & Zero-Network Access) ---
 # Strictly disable outbound telemetry to enforce a secure, isolated local runtime environment
